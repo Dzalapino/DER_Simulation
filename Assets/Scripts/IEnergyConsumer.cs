@@ -6,4 +6,5 @@ public interface IEnergyConsumer
     List<IEnergyProducer> EnergySources { get; set; }
     
     void ConsumeEnergy();
+    void Blackout();
 }

@@ -2,6 +2,7 @@ public interface IEnergyProducer
 {
     float ProductionAmount { get; set; }
     float CurrentEnergyToDistribute { get; set; }
-    
-    bool ProduceEnergy();
+
+    void ProduceEnergy();
+    float GetEnergy(float amountEnergyTaken);
 }
