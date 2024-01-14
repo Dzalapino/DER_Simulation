@@ -10,6 +10,12 @@ public class UI : MonoBehaviour
     {
         VisualElement root = GetComponent<UIDocument>().rootVisualElement;
         
+        // Init buttons to be used later
+        Button buttonCreateHouse = root.Q<Button>("CreateHouse");
+        Button buttonCreateCity = root.Q<Button>("CreateCity");
+        Button buttonCreateEnergyResource = root.Q<Button>("CreateEnergyResource");
         
+        // Add desired events for buttons
+        buttonCreateHouse.clicked += () => { Debug.Log("XD"); };
     }
 }

@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/ButtonStyleSheet.uss?fileID=7433441132597879392&amp;guid=7e61cf01de3514d41bdf728cfa2644e2&amp;type=3#ButtonStyleSheet" />
+    <ui:VisualElement style="flex-grow: 1;">
+        <ui:VisualElement name="MainButtonsContainer" style="flex-grow: 1; align-self: flex-start; justify-content: flex-end; align-items: stretch;">
+            <ui:Button text="Create house" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CreateHouse" class="button" />
+            <ui:Button text="Create city" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CreateCity" class="button" />
+            <ui:Button text="Create energy resource" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CreateEnergyResource" class="button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
