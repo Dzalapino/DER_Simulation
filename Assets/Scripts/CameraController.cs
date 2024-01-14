@@ -30,38 +30,49 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
-        // Update camera
+        if (!IsMouseWithinViewPort()) return;
         PanCamera();
         ZoomCamera();
     }
 
+    bool IsMouseWithinViewPort()
+    {
+        Vector3 mousePosition = Input.mousePosition;
+        
+        return mousePosition.x > 0 &&
+               mousePosition.x < Screen.width &&
+               mousePosition.y > 0 &&
+               mousePosition.y < Screen.height;
+    }
+
     void PanCamera()
     {
-        Vector3 position = transform.position;
+        Vector3 mousePosition = Input.mousePosition;
+        Vector3 cameraPosition = transform.position;
 
         // Check if the cursor is near the screen borders
-        if (Input.mousePosition.y >= Screen.height - panBorderThickness)
+        if (mousePosition.y >= Screen.height - panBorderThickness)
         {
-            position.z += panSpeed * Time.deltaTime;
+            cameraPosition.z += panSpeed * Time.deltaTime;
         }
 
-        if (Input.mousePosition.y <= panBorderThickness)
+        if (mousePosition.y <= panBorderThickness)
         {
-            position.z -= panSpeed * Time.deltaTime;
+            cameraPosition.z -= panSpeed * Time.deltaTime;
         }
 
-        if (Input.mousePosition.x >= Screen.width - panBorderThickness)
+        if (mousePosition.x >= Screen.width - panBorderThickness)
         {
-            position.x += panSpeed * Time.deltaTime;
+            cameraPosition.x += panSpeed * Time.deltaTime;
         }
 
-        if (Input.mousePosition.x <= panBorderThickness)
+        if (mousePosition.x <= panBorderThickness)
         {
-            position.x -= panSpeed * Time.deltaTime;
+            cameraPosition.x -= panSpeed * Time.deltaTime;
         }
 
         // Apply the new position to the camera
-        transform.position = position;
+        transform.position = cameraPosition;
     }
 
     void ZoomCamera()
