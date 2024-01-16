@@ -7,9 +7,11 @@ public class House : EnergyStructure, IEnergyConsumer
     public float ConsumptionAmount { get; set; }
     public List<IEnergyProducer> EnergySources { get; set; }
     
-    public House(Vector3 position, float consumptionAmount) : base(position, "House")
+    public void Initialize(Vector3 position, float consumptionAmount, List<IEnergyProducer> energySources = null)
     {
+        base.Initialize(position, "House");
         ConsumptionAmount = consumptionAmount;
+        EnergySources = energySources ?? new List<IEnergyProducer>();
     }
 
     public void ConsumeEnergy()

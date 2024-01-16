@@ -1,4 +1,4 @@
-.button {
+.buttonStyle {
     border-top-left-radius: 20px;
     border-top-right-radius: -107px;
     border-bottom-right-radius: 20px;
@@ -7,6 +7,32 @@
     -unity-text-align: middle-center;
     white-space: normal;
     font-size: 12px;
-    background-color: rgba(0, 198, 255, 0.42);
-    color: rgb(233, 233, 233);
+    background-color: rgba(26, 33, 36, 0.42);
+    color: rgb(145, 138, 255);
+    -unity-text-outline-width: 0;
+    border-top-width: 2px;
+    border-right-width: -20px;
+    border-bottom-width: 3px;
+    -unity-text-outline-color: rgba(255, 255, 255, 0);
+    border-left-color: rgba(100, 99, 188, 0.43);
+    border-right-color: rgba(100, 99, 188, 0.43);
+    border-top-color: rgba(100, 99, 188, 0.43);
+    border-bottom-color: rgba(100, 99, 188, 0.43);
+}
+
+.text {
+    color: rgb(183, 180, 226);
+}
+
+.panelStyle {
+    background-color: rgba(0, 0, 0, 0.47);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    align-self: flex-end;
+    align-items: auto;
+    justify-content: flex-start;
+    margin-top: 3%;
+    margin-right: 3%;
 }
