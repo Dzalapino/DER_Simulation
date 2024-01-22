@@ -1,23 +1,13 @@
-using System;
 using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 
-public class EnergyStructure : ScriptableObject
+public class EnergyStructure
 {
     private GameObject _structureObject;
     public DailyEnergyCycle DailyEnergyCycle { get; set; }
     public Vector3 Position { get; set; }
-
-    private void OnDisable()
-    {
-        // Destroy structure
-        if (_structureObject.IsUnityNull()) return;
-        // Destroy the instantiated prefab
-        Destroy(_structureObject);
-    }
     
-    protected void Initialize(string prefabName, Vector3 position, CycleTarget cycleTarget)
+    public EnergyStructure(string prefabName, Vector3 position, CycleTarget cycleTarget)
     {
         Position = position;
         DailyEnergyCycle = new DailyEnergyCycle(cycleTarget);
@@ -28,14 +18,21 @@ public class EnergyStructure : ScriptableObject
         if (prefab != null)
         {
             // Instantiate the prefab at the specified position
-            _structureObject = Instantiate(prefab, Position, Quaternion.identity);
+            _structureObject = Object.Instantiate(prefab, Position, Quaternion.identity);
         }
         else
         {
             Debug.LogError($"Energy Structure prefab not found with path: Prefabs/{prefabName}");
         }
     }
-
+    
+    public void DestroyEnergyStructure()
+    {
+        if (_structureObject.IsUnityNull()) return;
+        Object.Destroy(_structureObject);
+        _structureObject = null;
+    }
+    
     public void MoveEnergyStructure(Vector3 offset)
     {
         Position += offset;

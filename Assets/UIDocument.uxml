@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/ButtonStyleSheet.uss?fileID=7433441132597879392&amp;guid=7e61cf01de3514d41bdf728cfa2644e2&amp;type=3#ButtonStyleSheet" />
+    <Style src="project://database/Assets/MainStyleSheet.uss?fileID=7433441132597879392&amp;guid=7e61cf01de3514d41bdf728cfa2644e2&amp;type=3#MainStyleSheet" />
     <ui:VisualElement style="flex-grow: 1; flex-direction: column; align-items: auto; justify-content: flex-start; flex-wrap: nowrap;">
         <ui:VisualElement name="DisplayInfoPopup" class="background panelStyle" style="flex-grow: 1;">
             <ui:ListView focusable="true" name="ListViewEnergyStructures" style="align-self: stretch;" />
@@ -14,11 +14,25 @@
                 <ui:Button text="Create" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ConfirmCreateHub" class="button buttonStyle" style="flex-shrink: 1;" />
             </ui:VisualElement>
         </ui:VisualElement>
+        <ui:VisualElement name="MoveHubPopup" class="background panelStyle">
+            <ui:Label tabindex="-1" text="Moving hub" parse-escape-sequences="true" display-tooltip-when-elided="true" class="text" style="align-self: center;" />
+            <ui:VisualElement name="VisualElement" style="flex-grow: 0; flex-direction: row; height: auto; align-self: center; justify-content: flex-start; align-items: flex-start; flex-basis: auto; flex-shrink: 1; flex-wrap: nowrap; max-width: none;">
+                <ui:Button text="-" parse-escape-sequences="true" display-tooltip-when-elided="true" name="MoveLeft" class="button buttonStyle" />
+                <ui:Label tabindex="-1" text="Horizontally" parse-escape-sequences="true" display-tooltip-when-elided="true" class="text" />
+                <ui:Button text="+" parse-escape-sequences="true" display-tooltip-when-elided="true" name="MoveRight" class="button buttonStyle" style="flex-shrink: 1;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="VisualElement" style="flex-grow: 0; flex-direction: row; height: auto; align-self: center; justify-content: flex-start; align-items: flex-start; flex-basis: auto; flex-shrink: 1; flex-wrap: nowrap; max-width: none;">
+                <ui:Button text="-" parse-escape-sequences="true" display-tooltip-when-elided="true" name="MoveDown" class="button buttonStyle" />
+                <ui:Label tabindex="-1" text="  Vertically  " parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="true" class="text" />
+                <ui:Button text="+" parse-escape-sequences="true" display-tooltip-when-elided="true" name="MoveUp" class="button buttonStyle" style="flex-shrink: 1;" />
+            </ui:VisualElement>
+            <ui:Button text="Done" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ConfirmMoving" class="buttonStyle" style="align-self: center;" />
+        </ui:VisualElement>
         <ui:VisualElement name="MainButtonsContainer" style="flex-grow: 1; align-self: flex-start; justify-content: flex-end; align-items: stretch;">
             <ui:Button text="Cities Info" parse-escape-sequences="true" display-tooltip-when-elided="true" name="DisplayInfo" class="button buttonStyle" />
             <ui:Button text="Create hub" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CreateHub" class="button buttonStyle" />
             <ui:Button text="Create energy resource" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CreateEnergyResource" class="button buttonStyle" />
-            <ui:Button text="Reset" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ResetButton" class="buttonStyle" />
+            <ui:Button text="Reset" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Reset" class="buttonStyle" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

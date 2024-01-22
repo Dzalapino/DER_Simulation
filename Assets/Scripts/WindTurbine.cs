@@ -2,8 +2,5 @@ using UnityEngine;
 
 public class WindTurbine : EnergyStructure
 {
-    public void Initialize(Vector3 position)
-    {
-        base.Initialize("WindTurbine", position, CycleTarget.Wind);
-    }
+    public WindTurbine(Vector3 position) : base("WindTurbine", position, CycleTarget.Wind) { }
 }

@@ -8,19 +8,14 @@ public class SolarFarm : EnergyStructureCluster
     public SolarFarm(Vector3 position, int numberOfPanels, float targetEnergyProduction) : base(position)
     {
         TargetEnergyProduction = targetEnergyProduction;
-        GenerateEnergyStructures(numberOfPanels);
-    }
-
-    protected override void GenerateEnergyStructures(int numberOfPanels)
-    {
+        
         // Generate positions for the houses in a filled circular pattern
         Vector3[] turbinePositions = DistributePointsInGrid(numberOfPanels);
 
         // Instantiate houses at the generated positions
         for (int i = 0; i < numberOfPanels; i++)
         {
-            EnergyStructures.Add(ScriptableObject.CreateInstance<SolarPanel>());
-            (EnergyStructures.Last() as SolarPanel).Initialize(turbinePositions[i]);
+            EnergyStructures.Add(new SolarPanel(turbinePositions[i]));
         }
     }
 }

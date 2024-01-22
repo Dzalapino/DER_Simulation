@@ -11,12 +11,7 @@ public class UI : MonoBehaviour
     // Main buttons
     private Button _buttonDisplayInfo;
     private Button _buttonCreateCity;
-
-    // Display info popup elements
-    private VisualElement _displayInfoPopup;
-    private ListView _listViewEnergyStructures;
-    private VisualTreeAsset _houseItemTemplate;
-    private VisualTreeAsset _clusterItemTemplate;
+    private Button _buttonReset;
 
     // Hub creation popup elements
     private VisualElement _createHubPopup;
@@ -26,6 +21,20 @@ public class UI : MonoBehaviour
     private FloatField _floatFieldTargetWindProduction;
     private Button _buttonCancelCreateCity;
     private Button _buttonConfirmCreateCity;
+    
+    // Move hub popup elements
+    private VisualElement _moveHubPopup;
+    private Button _buttonMoveLeft;
+    private Button _buttonMoveRight;
+    private Button _buttonMoveUp;
+    private Button _buttonMoveDown;
+    private Button _buttonConfirmMoveHub;
+
+    // Display info popup elements
+    private VisualElement _displayInfoPopup;
+    private ListView _listViewEnergyStructures;
+    private VisualTreeAsset _houseItemTemplate;
+    private VisualTreeAsset _clusterItemTemplate;
 
     private void Start()
     {
@@ -40,12 +49,8 @@ public class UI : MonoBehaviour
         // Init main buttons
         _buttonDisplayInfo = root.Q<Button>("DisplayInfo");
         _buttonCreateCity = root.Q<Button>("CreateHub");
+        _buttonReset = root.Q<Button>("Reset");
         //_buttonCreateEnergyResource = root.Q<Button>("CreateEnergyResource");
-
-        // Init display info popup elements
-        _displayInfoPopup = root.Q<VisualElement>("DisplayInfoPopup");
-        _listViewEnergyStructures = root.Q<ListView>("ListViewEnergyStructures");
-        _displayInfoPopup.style.display = DisplayStyle.None;
 
         // Init city popup elements
         _createHubPopup = root.Q<VisualElement>("CreateHubPopup");
@@ -58,6 +63,20 @@ public class UI : MonoBehaviour
         _buttonConfirmCreateCity = root.Q<Button>("ConfirmCreateHub");
         _createHubPopup.style.display = DisplayStyle.None;
 
+        // Init move hub popup elements
+        _moveHubPopup = root.Q<VisualElement>("MoveHubPopup");
+        _buttonMoveLeft = root.Q<Button>("MoveLeft");
+        _buttonMoveRight = root.Q<Button>("MoveRight");
+        _buttonMoveUp = root.Q<Button>("MoveUp");
+        _buttonMoveDown = root.Q<Button>("MoveDown");
+        _buttonConfirmMoveHub = root.Q<Button>("ConfirmMoving");
+        _moveHubPopup.style.display = DisplayStyle.None;
+        
+        // Init display info popup elements
+        _displayInfoPopup = root.Q<VisualElement>("DisplayInfoPopup");
+        _listViewEnergyStructures = root.Q<ListView>("ListViewEnergyStructures");
+        _displayInfoPopup.style.display = DisplayStyle.None;
+
         // Add callback for slider
         _sliderNumberOfHouses.RegisterValueChangedCallback(evt =>
         {
@@ -67,8 +86,14 @@ public class UI : MonoBehaviour
         // Add desired events for buttons
         _buttonDisplayInfo.clicked += OnButtonDisplayInfoClicked;
         _buttonCreateCity.clicked += OnButtonCreateHub;
+        _buttonReset.clicked += OnButtonReset;
         _buttonCancelCreateCity.clicked += OnButtonCancelCreateHub;
         _buttonConfirmCreateCity.clicked += OnButtonConfirmCreateHub;
+        _buttonMoveLeft.clicked += OnButtonMoveLeft;
+        _buttonMoveRight.clicked += OnButtonMoveRight;
+        _buttonMoveUp.clicked += OnButtonMoveUp;
+        _buttonMoveDown.clicked += OnButtonMoveDown;
+        _buttonConfirmMoveHub.clicked += OnButtonConfirmMoveHub;
     }
 
     private bool IsPopupDisplayed(VisualElement popup)
@@ -119,6 +144,13 @@ public class UI : MonoBehaviour
             EnablePopup(_createHubPopup);
         }
     }
+
+    private void OnButtonReset()
+    {
+        DisableAllPopups();
+        _hubs.ForEach(hub => hub.DestroyHub());
+        _hubs.Clear();
+    }
     
     private void OnButtonCancelCreateHub()
     {
@@ -135,7 +167,32 @@ public class UI : MonoBehaviour
                 _floatFieldTargetWindProduction.value
             )
         );
-        DisablePopup(_createHubPopup);
+        EnablePopup(_moveHubPopup);
+    }
+
+    private void OnButtonMoveLeft()
+    {
+        _hubs.Last().MoveHub(Vector3.left * Constants.HouseSeparation);
+    }
+    
+    private void OnButtonMoveRight()
+    {
+        _hubs.Last().MoveHub(Vector3.right * Constants.HouseSeparation);
+    }
+    
+    private void OnButtonMoveDown()
+    {
+        _hubs.Last().MoveHub(Vector3.back * Constants.HouseSeparation);
+    }
+    
+    private void OnButtonMoveUp()
+    {
+        _hubs.Last().MoveHub(Vector3.forward * Constants.HouseSeparation);
+    }
+    
+    private void OnButtonConfirmMoveHub()
+    {
+        DisablePopup(_moveHubPopup);
     }
     
     private void PopulateListView()
@@ -149,8 +206,6 @@ public class UI : MonoBehaviour
         // Populate the data list with house information
         foreach (var hub in _hubs)
         {
-            if (hub.GetType() != typeof(City)) continue;
-
             foreach (var energyStructure in hub.City.EnergyStructures)
             {
                 // var city = (City) energyStructureCluster;

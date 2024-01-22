@@ -8,19 +8,13 @@ public class WindFarm : EnergyStructureCluster
     public WindFarm(Vector3 position, int numberOfTurbines, float targetEnergyProduction) : base(position)
     {
         TargetEnergyProduction = targetEnergyProduction;
-        GenerateEnergyStructures(numberOfTurbines);
-    }
+        // Generate positions for the turbines in a filled circular pattern
+        Vector3[] turbinePositions = DistributePointsInGrid(numberOfTurbines);
 
-    protected override void GenerateEnergyStructures(int numberOfPanels)
-    {
-        // Generate positions for the houses in a filled circular pattern
-        Vector3[] turbinePositions = DistributePointsInGrid(numberOfPanels);
-
-        // Instantiate houses at the generated positions
-        for (int i = 0; i < numberOfPanels; i++)
+        // Instantiate turbines at the generated positions
+        for (int i = 0; i < numberOfTurbines; i++)
         {
-            EnergyStructures.Add(ScriptableObject.CreateInstance<WindTurbine>());
-            (EnergyStructures.Last() as WindTurbine).Initialize(turbinePositions[i]);
+            EnergyStructures.Add(new WindTurbine(turbinePositions[i]));
         }
     }
 }

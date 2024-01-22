@@ -12,12 +12,10 @@ public abstract class EnergyStructureCluster
         EnergyStructures = new List<EnergyStructure>();
     }
     
-    /*public List<EnergyStructure> GetEnergyStructuresOfType(Type type)
+    public void DestroyCluster()
     {
-        return Houses.Where(type.IsInstanceOfType).ToList();
-    }*/
-
-    protected abstract void GenerateEnergyStructures(int numberOfPanels);
+        EnergyStructures.ForEach(energyStructure => energyStructure.DestroyEnergyStructure());
+    }
     
     protected Vector3[] DistributePointsInGrid(int n)
     {
@@ -41,9 +39,8 @@ public abstract class EnergyStructureCluster
         return points;
     }
     
-    public void MoveCluster(float x, float y, float z)
+    public void MoveCluster(Vector3 offset)
     {
-        var offset = new Vector3(1.0f, 0.0f, 1.0f);
         Position += offset;
         foreach (var energyStructure in EnergyStructures)
         {

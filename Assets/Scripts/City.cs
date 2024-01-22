@@ -8,19 +8,14 @@ public class City : EnergyStructureCluster
     public City(Vector3 position, int numberOfHouses, float targetEnergyConsumption) : base(position)
     {
         TargetEnergyConsumption = targetEnergyConsumption;
-        GenerateEnergyStructures(numberOfHouses);
-    }
-
-    protected override void GenerateEnergyStructures(int numberOfPanels)
-    {
+        
         // Generate positions for the houses in a filled circular pattern
-        Vector3[] housePositions = DistributePointsInGrid(numberOfPanels);
+        Vector3[] housePositions = DistributePointsInGrid(numberOfHouses);
 
         // Instantiate houses at the generated positions
-        for (int i = 0; i < numberOfPanels; i++)
+        for (int i = 0; i < numberOfHouses; i++)
         {
-            EnergyStructures.Add(ScriptableObject.CreateInstance<House>());
-            (EnergyStructures.Last() as House).Initialize(housePositions[i]);
+            EnergyStructures.Add(new House(housePositions[i]));
         }
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Hub
 {
-    public Vector3 Position { get; set; } = Vector3.zero;
+    private Vector3 Position { get; set; } = Vector3.zero;
     public City City { get; } = null;
     public SolarFarm SolarFarm { get; } = null;
     public WindFarm WindFarm { get; } = null;
@@ -26,5 +26,20 @@ public class Hub
             5,
             targetWindProduction
             );
+    }
+    
+    public void DestroyHub()
+    {
+        City.DestroyCluster();
+        SolarFarm.DestroyCluster();
+        WindFarm.DestroyCluster();
+    }
+    
+    public void MoveHub(Vector3 offset)
+    {
+        Position += offset;
+        City.MoveCluster(offset);
+        SolarFarm.MoveCluster(offset);
+        WindFarm.MoveCluster(offset);
     }
 }
