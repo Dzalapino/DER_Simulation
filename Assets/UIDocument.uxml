@@ -4,18 +4,19 @@
         <ui:VisualElement name="DisplayInfoPopup" class="background panelStyle" style="flex-grow: 1;">
             <ui:ListView focusable="true" name="ListViewEnergyStructures" style="align-self: stretch;" />
         </ui:VisualElement>
-        <ui:VisualElement name="CreateCityPopup" class="background panelStyle">
+        <ui:VisualElement name="CreateHubPopup" class="background panelStyle">
             <ui:SliderInt picking-mode="Ignore" label="Number of houses" value="5" high-value="10" low-value="1" name="SliderNumberOfHouses" class="text" style="align-self: stretch; height: auto;" />
-            <ui:FloatField label="Min energy consumption" value="42,2" name="MinEnergyConsumption" class="text" style="align-items: stretch; justify-content: flex-start; align-self: auto; height: auto;" />
-            <ui:FloatField label="Max energy consumption" value="42,2" is-delayed="true" name="MaxEnergyConsumption" class="text" style="height: auto;" />
+            <ui:FloatField label="Target energy consumption" value="42,2" name="TargetEnergyConsumption" class="text" style="align-items: stretch; justify-content: flex-start; align-self: auto; height: auto;" />
+            <ui:FloatField label="Target solar production" value="42,2" is-delayed="true" name="TargetSolarProduction" class="text" style="height: auto;" />
+            <ui:FloatField label="Target wind production" value="42,2" is-delayed="true" name="TargetWindProduction" class="text" style="height: auto;" />
             <ui:VisualElement name="VisualElement" style="flex-grow: 0; flex-direction: row; height: auto; align-self: center; justify-content: flex-start; align-items: flex-start; flex-basis: auto; flex-shrink: 1; flex-wrap: nowrap; max-width: none;">
-                <ui:Button text="Cancel" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CancelCreateCity" class="button buttonStyle" />
-                <ui:Button text="Create" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ConfirmCreateCity" class="button buttonStyle" style="flex-shrink: 1;" />
+                <ui:Button text="Cancel" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CancelCreateHub" class="button buttonStyle" />
+                <ui:Button text="Create" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ConfirmCreateHub" class="button buttonStyle" style="flex-shrink: 1;" />
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="MainButtonsContainer" style="flex-grow: 1; align-self: flex-start; justify-content: flex-end; align-items: stretch;">
             <ui:Button text="Cities Info" parse-escape-sequences="true" display-tooltip-when-elided="true" name="DisplayInfo" class="button buttonStyle" />
-            <ui:Button text="Create city" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CreateCity" class="button buttonStyle" />
+            <ui:Button text="Create hub" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CreateHub" class="button buttonStyle" />
             <ui:Button text="Create energy resource" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CreateEnergyResource" class="button buttonStyle" />
             <ui:Button text="Reset" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ResetButton" class="buttonStyle" />
         </ui:VisualElement>

@@ -17,7 +17,7 @@ public abstract class EnergyStructureCluster
         return Houses.Where(type.IsInstanceOfType).ToList();
     }*/
 
-    protected abstract void GenerateEnergyStructures(int numberOfStructures);
+    protected abstract void GenerateEnergyStructures(int numberOfPanels);
     
     protected Vector3[] DistributePointsInGrid(int n)
     {

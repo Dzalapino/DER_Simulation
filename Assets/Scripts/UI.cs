@@ -6,12 +6,11 @@ using UnityEngine.UIElements;
 public class UI : MonoBehaviour
 {
     private GameObject _selectedIndicator;
-    private List<EnergyStructureCluster> _energyStructureClusters = new();
+    private List<Hub> _hubs = new();
 
     // Main buttons
     private Button _buttonDisplayInfo;
     private Button _buttonCreateCity;
-    private Button _buttonCreateEnergyResource;
 
     // Display info popup elements
     private VisualElement _displayInfoPopup;
@@ -19,15 +18,14 @@ public class UI : MonoBehaviour
     private VisualTreeAsset _houseItemTemplate;
     private VisualTreeAsset _clusterItemTemplate;
 
-    // City popup elements
-    private VisualElement _createCityPopup;
+    // Hub creation popup elements
+    private VisualElement _createHubPopup;
     private SliderInt _sliderNumberOfHouses;
-    private FloatField _floatFieldMinEnergyConsumption;
-    private FloatField _floatFieldMaxEnergyConsumption;
+    private FloatField _floatFieldTargetEnergyConsumption;
+    private FloatField _floatFieldTargetSolarProduction;
+    private FloatField _floatFieldTargetWindProduction;
     private Button _buttonCancelCreateCity;
     private Button _buttonConfirmCreateCity;
-    
-    // Energy source popup elements
 
     private void Start()
     {
@@ -41,8 +39,8 @@ public class UI : MonoBehaviour
 
         // Init main buttons
         _buttonDisplayInfo = root.Q<Button>("DisplayInfo");
-        _buttonCreateCity = root.Q<Button>("CreateCity");
-        _buttonCreateEnergyResource = root.Q<Button>("CreateEnergyResource");
+        _buttonCreateCity = root.Q<Button>("CreateHub");
+        //_buttonCreateEnergyResource = root.Q<Button>("CreateEnergyResource");
 
         // Init display info popup elements
         _displayInfoPopup = root.Q<VisualElement>("DisplayInfoPopup");
@@ -50,14 +48,15 @@ public class UI : MonoBehaviour
         _displayInfoPopup.style.display = DisplayStyle.None;
 
         // Init city popup elements
-        _createCityPopup = root.Q<VisualElement>("CreateCityPopup");
+        _createHubPopup = root.Q<VisualElement>("CreateHubPopup");
         _sliderNumberOfHouses = root.Q<SliderInt>("SliderNumberOfHouses");
         _sliderNumberOfHouses.label = $"Number of houses ({_sliderNumberOfHouses.value})";
-        _floatFieldMinEnergyConsumption = root.Q<FloatField>("MinEnergyConsumption");
-        _floatFieldMaxEnergyConsumption = root.Q<FloatField>("MaxEnergyConsumption");
-        _buttonCancelCreateCity = root.Q<Button>("CancelCreateCity");
-        _buttonConfirmCreateCity = root.Q<Button>("ConfirmCreateCity");
-        _createCityPopup.style.display = DisplayStyle.None;
+        _floatFieldTargetEnergyConsumption = root.Q<FloatField>("TargetEnergyConsumption");
+        _floatFieldTargetSolarProduction = root.Q<FloatField>("TargetSolarProduction");
+        _floatFieldTargetWindProduction = root.Q<FloatField>("TargetWindProduction");
+        _buttonCancelCreateCity = root.Q<Button>("CancelCreateHub");
+        _buttonConfirmCreateCity = root.Q<Button>("ConfirmCreateHub");
+        _createHubPopup.style.display = DisplayStyle.None;
 
         // Add callback for slider
         _sliderNumberOfHouses.RegisterValueChangedCallback(evt =>
@@ -67,9 +66,9 @@ public class UI : MonoBehaviour
 
         // Add desired events for buttons
         _buttonDisplayInfo.clicked += OnButtonDisplayInfoClicked;
-        _buttonCreateCity.clicked += OnButtonCreateCity;
-        _buttonCancelCreateCity.clicked += OnButtonCancelCreateCity;
-        _buttonConfirmCreateCity.clicked += OnButtonConfirmCreateCity;
+        _buttonCreateCity.clicked += OnButtonCreateHub;
+        _buttonCancelCreateCity.clicked += OnButtonCancelCreateHub;
+        _buttonConfirmCreateCity.clicked += OnButtonConfirmCreateHub;
     }
 
     private bool IsPopupDisplayed(VisualElement popup)
@@ -81,7 +80,7 @@ public class UI : MonoBehaviour
     {
         _selectedIndicator.SetActive(false);
         DisablePopup(_displayInfoPopup);
-        DisablePopup(_createCityPopup);
+        DisablePopup(_createHubPopup);
     }
     
     private void DisablePopup(VisualElement popup)
@@ -109,33 +108,34 @@ public class UI : MonoBehaviour
         }
     }
 
-    private void OnButtonCreateCity()
+    private void OnButtonCreateHub()
     {
-        if (IsPopupDisplayed(_createCityPopup))
+        if (IsPopupDisplayed(_createHubPopup))
         {
-            DisablePopup(_createCityPopup);
+            DisablePopup(_createHubPopup);
         }
         else
         {
-            EnablePopup(_createCityPopup);
+            EnablePopup(_createHubPopup);
         }
     }
     
-    private void OnButtonCancelCreateCity()
+    private void OnButtonCancelCreateHub()
     {
-        DisablePopup(_createCityPopup);
+        DisablePopup(_createHubPopup);
     }
     
-    private void OnButtonConfirmCreateCity()
+    private void OnButtonConfirmCreateHub()
     {
-        _energyStructureClusters.Add(
-            new City(
-                new Vector3(0f, Constants.InitialHousePosition.y, 0f),
+        _hubs.Add(
+            new Hub(
                 _sliderNumberOfHouses.value,
-                _floatFieldMinEnergyConsumption.value,
-                _floatFieldMaxEnergyConsumption.value)
+                _floatFieldTargetEnergyConsumption.value,
+                _floatFieldTargetSolarProduction.value,
+                _floatFieldTargetWindProduction.value
+            )
         );
-        DisablePopup(_createCityPopup);
+        DisablePopup(_createHubPopup);
     }
     
     private void PopulateListView()
@@ -147,19 +147,18 @@ public class UI : MonoBehaviour
         List<string> dataList = new List<string>();
     
         // Populate the data list with house information
-        foreach (var energyStructureCluster in _energyStructureClusters)
+        foreach (var hub in _hubs)
         {
-            if (energyStructureCluster.GetType() != typeof(City)) continue;
+            if (hub.GetType() != typeof(City)) continue;
 
-            foreach (var energyStructure in energyStructureCluster.EnergyStructures)
+            foreach (var energyStructure in hub.City.EnergyStructures)
             {
                 // var city = (City) energyStructureCluster;
                 var house = energyStructure as House;
                 
                 // Customize this line to format the house information
                 string houseInfo = $"{house.GetType().Name}\n" +
-                                   $"Position: {house.Position}\n" +
-                                   $"Consumption: {house.ConsumptionAmount}";
+                                   $"Position: {house.Position}\n";
                 dataList.Add(houseInfo);
             }
         }
@@ -202,9 +201,9 @@ public class UI : MonoBehaviour
     void OnItemClick(VisualElement listItem)
     {
         int selectedIndex = _listViewEnergyStructures.selectedIndex;
-        if (selectedIndex >= 0 && selectedIndex < _energyStructureClusters.First().EnergyStructures.Count)
+        if (selectedIndex >= 0 && selectedIndex < _hubs.First().City.EnergyStructures.Count)
         {
-            House selectedHouse = _energyStructureClusters.First().EnergyStructures[selectedIndex] as House;
+            House selectedHouse = _hubs.First().City.EnergyStructures[selectedIndex] as House;
             
             // Highlight the selected house's model (Assuming there is a Highlight method in your House class)
             if (selectedHouse != null)

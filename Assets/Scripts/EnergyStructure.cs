@@ -6,6 +6,7 @@ using UnityEngine;
 public class EnergyStructure : ScriptableObject
 {
     private GameObject _structureObject;
+    public DailyEnergyCycle DailyEnergyCycle { get; set; }
     public Vector3 Position { get; set; }
 
     private void OnDisable()
@@ -16,9 +17,10 @@ public class EnergyStructure : ScriptableObject
         Destroy(_structureObject);
     }
     
-    protected void Initialize(Vector3 position, string prefabName)
+    protected void Initialize(string prefabName, Vector3 position, CycleTarget cycleTarget)
     {
         Position = position;
+        DailyEnergyCycle = new DailyEnergyCycle(cycleTarget);
 
         // Load the prefab from the resources folder
         GameObject prefab = Resources.Load<GameObject>($"Prefabs/{prefabName}");
