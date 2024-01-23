@@ -5,8 +5,10 @@ using UnityEngine;
 public class SolarFarm : EnergyStructureCluster
 {
     public float TargetEnergyProduction { get; set; }
+    public DailyEnergyCycle DailyEnergyCycle { get; set; }
     public SolarFarm(Vector3 position, int numberOfPanels, float targetEnergyProduction) : base(position)
     {
+        DailyEnergyCycle = new DailyEnergyCycle(CycleTarget.Solar);
         TargetEnergyProduction = targetEnergyProduction;
         
         // Generate positions for the houses in a filled circular pattern

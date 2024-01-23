@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class City : EnergyStructureCluster
 {
-    public float TargetEnergyConsumption { get; set; }
+    public float TargetEnergyConsumption { get; private set; }
+    
+    public float TargetEnergyConsumptionPerHouse => TargetEnergyConsumption / EnergyStructures.Count;
     public City(Vector3 position, int numberOfHouses, float targetEnergyConsumption) : base(position)
     {
         TargetEnergyConsumption = targetEnergyConsumption;

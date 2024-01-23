@@ -5,13 +5,24 @@ using UnityEngine.UIElements;
 
 public class UI : MonoBehaviour
 {
-    private GameObject _selectedIndicator;
+    public Camera mainCamera;
+    
     private List<Hub> _hubs = new();
+    private Hub _selectedHub = null;
 
     // Main buttons
+    private Button _buttonSimulateDailyCycle;
     private Button _buttonDisplayInfo;
     private Button _buttonCreateCity;
     private Button _buttonReset;
+
+    // Display info popup elements
+    private VisualElement _displayInfoPopup;
+    private ListView _listView;
+    
+    // Daily info popup elements
+    private VisualElement _dailyInfoPopup;
+    private ListView _dailyInfoListView;
 
     // Hub creation popup elements
     private VisualElement _createHubPopup;
@@ -19,6 +30,7 @@ public class UI : MonoBehaviour
     private FloatField _floatFieldTargetEnergyConsumption;
     private FloatField _floatFieldTargetSolarProduction;
     private FloatField _floatFieldTargetWindProduction;
+    private FloatField _floatFieldStorageSize;
     private Button _buttonCancelCreateCity;
     private Button _buttonConfirmCreateCity;
     
@@ -30,38 +42,30 @@ public class UI : MonoBehaviour
     private Button _buttonMoveDown;
     private Button _buttonConfirmMoveHub;
 
-    // Display info popup elements
-    private VisualElement _displayInfoPopup;
-    private ListView _listViewEnergyStructures;
-    private VisualTreeAsset _houseItemTemplate;
-    private VisualTreeAsset _clusterItemTemplate;
-
     private void Start()
     {
-        // Initialize the indicator prefab
-        var prefab = Resources.Load<GameObject>("Prefabs/Indicator");
-        _selectedIndicator = Instantiate(prefab, Vector3.zero, Quaternion.identity);
-        _selectedIndicator.SetActive(false);
+        mainCamera = mainCamera == null ? Camera.main : mainCamera;
         
         // Get the root of the UI document
         VisualElement root = GetComponent<UIDocument>().rootVisualElement;
 
         // Init main buttons
+        _buttonSimulateDailyCycle = root.Q<Button>("SimulateDailyCycle");
         _buttonDisplayInfo = root.Q<Button>("DisplayInfo");
         _buttonCreateCity = root.Q<Button>("CreateHub");
         _buttonReset = root.Q<Button>("Reset");
-        //_buttonCreateEnergyResource = root.Q<Button>("CreateEnergyResource");
+        _buttonSimulateDailyCycle.style.display = DisplayStyle.None;
 
-        // Init city popup elements
+        // Create hub popup elements
         _createHubPopup = root.Q<VisualElement>("CreateHubPopup");
         _sliderNumberOfHouses = root.Q<SliderInt>("SliderNumberOfHouses");
         _sliderNumberOfHouses.label = $"Number of houses ({_sliderNumberOfHouses.value})";
         _floatFieldTargetEnergyConsumption = root.Q<FloatField>("TargetEnergyConsumption");
         _floatFieldTargetSolarProduction = root.Q<FloatField>("TargetSolarProduction");
         _floatFieldTargetWindProduction = root.Q<FloatField>("TargetWindProduction");
+        _floatFieldStorageSize = root.Q<FloatField>("StorageSize");
         _buttonCancelCreateCity = root.Q<Button>("CancelCreateHub");
         _buttonConfirmCreateCity = root.Q<Button>("ConfirmCreateHub");
-        _createHubPopup.style.display = DisplayStyle.None;
 
         // Init move hub popup elements
         _moveHubPopup = root.Q<VisualElement>("MoveHubPopup");
@@ -70,12 +74,16 @@ public class UI : MonoBehaviour
         _buttonMoveUp = root.Q<Button>("MoveUp");
         _buttonMoveDown = root.Q<Button>("MoveDown");
         _buttonConfirmMoveHub = root.Q<Button>("ConfirmMoving");
-        _moveHubPopup.style.display = DisplayStyle.None;
         
         // Init display info popup elements
         _displayInfoPopup = root.Q<VisualElement>("DisplayInfoPopup");
-        _listViewEnergyStructures = root.Q<ListView>("ListViewEnergyStructures");
-        _displayInfoPopup.style.display = DisplayStyle.None;
+        _listView = root.Q<ListView>("ListViewEnergyStructures");
+        
+        // Init daily info popup elements
+        _dailyInfoPopup = root.Q<VisualElement>("DailyInfoPopup");
+        _dailyInfoListView = root.Q<ListView>("ListViewDailyInfo");
+        
+        DisableAllPopups();
 
         // Add callback for slider
         _sliderNumberOfHouses.RegisterValueChangedCallback(evt =>
@@ -84,6 +92,7 @@ public class UI : MonoBehaviour
         });
 
         // Add desired events for buttons
+        _buttonSimulateDailyCycle.clicked += OnButtonSimulateDailyCycleClicked;
         _buttonDisplayInfo.clicked += OnButtonDisplayInfoClicked;
         _buttonCreateCity.clicked += OnButtonCreateHub;
         _buttonReset.clicked += OnButtonReset;
@@ -103,9 +112,11 @@ public class UI : MonoBehaviour
 
     private void DisableAllPopups()
     {
-        _selectedIndicator.SetActive(false);
         DisablePopup(_displayInfoPopup);
         DisablePopup(_createHubPopup);
+        DisablePopup(_moveHubPopup);
+        DisablePopup(_dailyInfoPopup);
+        _buttonSimulateDailyCycle.style.display = DisplayStyle.None;
     }
     
     private void DisablePopup(VisualElement popup)
@@ -118,18 +129,24 @@ public class UI : MonoBehaviour
         DisableAllPopups();
         popup.style.display = DisplayStyle.Flex;
     }
+    
+    private void OnButtonSimulateDailyCycleClicked()
+    {
+        _buttonSimulateDailyCycle.style.display = DisplayStyle.None;
+        PopulateDailyInfoListView();
+        EnablePopup(_dailyInfoPopup);
+    }
 
     private void OnButtonDisplayInfoClicked()
     {
         if (IsPopupDisplayed(_displayInfoPopup))
         {
-            _selectedIndicator.SetActive(false);
             DisablePopup(_displayInfoPopup);
         }
         else
         {
             EnablePopup(_displayInfoPopup);
-            PopulateListView();
+            PopulateHubInfoListView();
         }
     }
 
@@ -142,6 +159,10 @@ public class UI : MonoBehaviour
         else
         {
             EnablePopup(_createHubPopup);
+            _floatFieldTargetEnergyConsumption.SetValueWithoutNotify(0f);
+            _floatFieldTargetSolarProduction.SetValueWithoutNotify(0f);
+            _floatFieldTargetWindProduction.SetValueWithoutNotify(0f);
+            _floatFieldStorageSize.SetValueWithoutNotify(0f);
         }
     }
 
@@ -164,7 +185,8 @@ public class UI : MonoBehaviour
                 _sliderNumberOfHouses.value,
                 _floatFieldTargetEnergyConsumption.value,
                 _floatFieldTargetSolarProduction.value,
-                _floatFieldTargetWindProduction.value
+                _floatFieldTargetWindProduction.value,
+                _floatFieldStorageSize.value
             )
         );
         EnablePopup(_moveHubPopup);
@@ -195,84 +217,97 @@ public class UI : MonoBehaviour
         DisablePopup(_moveHubPopup);
     }
     
-    private void PopulateListView()
+    private void PopulateHubInfoListView()
     {
         // Clear existing items in the ListView
-        _listViewEnergyStructures.Clear();
+        _listView.Clear();
     
         // Create a list to store the data for the ListView
         List<string> dataList = new List<string>();
     
         // Populate the data list with house information
+        int i = 0;
         foreach (var hub in _hubs)
         {
-            foreach (var energyStructure in hub.City.EnergyStructures)
-            {
-                // var city = (City) energyStructureCluster;
-                var house = energyStructure as House;
-                
-                // Customize this line to format the house information
-                string houseInfo = $"{house.GetType().Name}\n" +
-                                   $"Position: {house.Position}\n";
-                dataList.Add(houseInfo);
-            }
+            string hubInfo = $"Hub {i++} on position {hub.Position}\n" +
+                             $"City consumption: {hub.City.TargetEnergyConsumption} MWh\n" +
+                             $"Solar production: {hub.SolarFarm.TargetEnergyProduction} MWh\n" +
+                             $"Wind production: {hub.WindFarm.TargetEnergyProduction} MWh\n" +
+                             $"Storage size: {hub.EnergyStorageSize} MWh\n" +
+                             $"Storage filled to {hub.CurrentEnergyStoragePercentage}%";
+            dataList.Add(hubInfo);
         }
     
         // Set up the ListView
-        _listViewEnergyStructures.selectionChanged += OnSelectionChange;
-        _listViewEnergyStructures.makeItem = MakeItem;
-        _listViewEnergyStructures.bindItem = BindItem;
-        _listViewEnergyStructures.fixedItemHeight = 60;
-        _listViewEnergyStructures.itemsSource = dataList;
-        _listViewEnergyStructures.Rebuild();
+        _listView.makeItem = MakeHubInfoListItem;
+        _listView.bindItem = BindHubInfoListItem;
+        _listView.itemsSource = dataList;
+        _listView.Rebuild();
     }
     
-    VisualElement MakeItem()
+    private void PopulateDailyInfoListView()
     {
-        // Create a VisualElement representing your list item
+        // Clear existing items in the ListView
+        _dailyInfoListView.Clear();
+        // Initialize the data list
+        var dataList = new List<string> { _selectedHub.GenerateDailyInfo() };
+        
+        // Bind the data list to the ListView
+        _dailyInfoListView.itemsSource = dataList;
+        
+        // Optionally, you can define a template for each item in the ListView
+        _dailyInfoListView.makeItem = () =>
+        {
+             var label = new Label();
+             label.AddToClassList("text");
+             return label;
+        };
+        _dailyInfoListView.bindItem = (element, index) => (element as Label).text = dataList[index];
+        _dailyInfoListView.Rebuild();
+    }
+    
+    VisualElement MakeHubInfoListItem()
+    {
+        // Create a VisualElement representing list item
         var listItem = new VisualElement();
         listItem.AddToClassList("text");
 
         // Add a label to represent house information
         var label = new Label();
-        label.name = "HouseInfoLabel";
+        label.name = "HubInfoLabel";
         listItem.Add(label);
-
+        
         // Add the click event callback
-        listItem.RegisterCallback<ClickEvent>(e => OnItemClick(listItem));
+        listItem.RegisterCallback<ClickEvent>(e => OnHubInfoItemClick(listItem));
 
         return listItem;
     }
     
-    void BindItem(VisualElement listItem, int index)
+    void BindHubInfoListItem(VisualElement listItem, int index)
     {
         // Bind the data to the item
-        string houseInfo = (string)_listViewEnergyStructures.itemsSource[index];
-        listItem.Q<Label>().text = houseInfo;
+        string itemInfo = (string)_listView.itemsSource[index];
+        listItem.Q<Label>().text = itemInfo;
 
         // Add additional logic to bind data to UI elements in the item
     }
     
-    void OnItemClick(VisualElement listItem)
+    void OnHubInfoItemClick(VisualElement listItem)
     {
-        int selectedIndex = _listViewEnergyStructures.selectedIndex;
-        if (selectedIndex >= 0 && selectedIndex < _hubs.First().City.EnergyStructures.Count)
+        int selectedIndex = _listView.selectedIndex;
+        if (selectedIndex >= 0 && selectedIndex < _hubs.Count)
         {
-            House selectedHouse = _hubs.First().City.EnergyStructures[selectedIndex] as House;
+            Hub selectedHub = _hubs[selectedIndex];
             
             // Highlight the selected house's model (Assuming there is a Highlight method in your House class)
-            if (selectedHouse != null)
+            if (selectedHub != null)
             {
-                _selectedIndicator.SetActive(true);
-                _selectedIndicator.transform.position = selectedHouse.Position + Vector3.up * 3.5f;
+                _selectedHub = selectedHub;
+                _buttonSimulateDailyCycle.style.display = DisplayStyle.Flex;
+                
+                // Set the camera position to the selected house
+                mainCamera.transform.position = new Vector3(selectedHub.Position.x, mainCamera.transform.position.y, selectedHub.Position.z);
             }
-
-            // Add your custom logic here to handle the selected house
         }
-    }
-
-    void OnSelectionChange(IEnumerable<object> selectedItems)
-    {
-        // Handle selection change if needed
     }
 }

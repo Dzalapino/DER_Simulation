@@ -5,8 +5,10 @@ using UnityEngine;
 public class WindFarm : EnergyStructureCluster
 {
     public float TargetEnergyProduction { get; set; }
+    public DailyEnergyCycle DailyEnergyCycle { get; set; }
     public WindFarm(Vector3 position, int numberOfTurbines, float targetEnergyProduction) : base(position)
     {
+        DailyEnergyCycle = new DailyEnergyCycle(CycleTarget.Wind);
         TargetEnergyProduction = targetEnergyProduction;
         // Generate positions for the turbines in a filled circular pattern
         Vector3[] turbinePositions = DistributePointsInGrid(numberOfTurbines);

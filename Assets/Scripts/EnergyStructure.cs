@@ -4,13 +4,11 @@ using UnityEngine;
 public class EnergyStructure
 {
     private GameObject _structureObject;
-    public DailyEnergyCycle DailyEnergyCycle { get; set; }
     public Vector3 Position { get; set; }
     
-    public EnergyStructure(string prefabName, Vector3 position, CycleTarget cycleTarget)
+    public EnergyStructure(string prefabName, Vector3 position)
     {
         Position = position;
-        DailyEnergyCycle = new DailyEnergyCycle(cycleTarget);
 
         // Load the prefab from the resources folder
         GameObject prefab = Resources.Load<GameObject>($"Prefabs/{prefabName}");
