@@ -60,9 +60,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8660013886317405469, guid: e008ccbb85ff79841af8d8d5566d6d40, type: 3}
+      propertyPath: m_TagString
+      value: Propeller
+      objectReference: {fileID: 0}
+    - target: {fileID: -2107387696673106892, guid: e008ccbb85ff79841af8d8d5566d6d40, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.21282922
+      objectReference: {fileID: 0}
+    - target: {fileID: -2107387696673106892, guid: e008ccbb85ff79841af8d8d5566d6d40, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -2107387696673106892, guid: e008ccbb85ff79841af8d8d5566d6d40, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.97708946
+      objectReference: {fileID: 0}
+    - target: {fileID: -2107387696673106892, guid: e008ccbb85ff79841af8d8d5566d6d40, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -1235.424
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: e008ccbb85ff79841af8d8d5566d6d40, type: 3}
       propertyPath: m_Name
-      value: Mini_wind_turbine
+      value: WindTurbine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

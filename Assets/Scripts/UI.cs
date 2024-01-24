@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 public class UI : MonoBehaviour
 {
     public Camera mainCamera;
+    public TurnWindTurbines turnWindTurbines;
     
     private List<Hub> _hubs = new();
     private Hub _selectedHub = null;
@@ -171,6 +172,7 @@ public class UI : MonoBehaviour
         DisableAllPopups();
         _hubs.ForEach(hub => hub.DestroyHub());
         _hubs.Clear();
+        turnWindTurbines.ClearWindTurbines();
     }
     
     private void OnButtonCancelCreateHub()
@@ -189,6 +191,7 @@ public class UI : MonoBehaviour
                 _floatFieldStorageSize.value
             )
         );
+        turnWindTurbines.RefreshPropellers();
         EnablePopup(_moveHubPopup);
     }
 
